@@ -26,8 +26,4 @@
     </Reference>
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /Y $(TargetPath) D:\SteamSandbox\steamapps\common\Muck\BepInEx\plugins&#xD;&#xA;copy /Y $(TargetPath) D:\SecondSteamLibrary\steamapps\common\Muck\BepInEx\plugins" />
-  </Target>
-
 </Project>
