@@ -12,7 +12,7 @@ namespace KeepInventory
         public const string
             GUID = "KeepInventory",
             NAME = "KeepInventory",
-            VERSION = "1.0.0";
+            VERSION = "1.0.1";
 
         public static List<int> playersWithMod = new List<int>();
         public static bool hasMod = Directory.GetFiles(Directory.GetCurrentDirectory(), "KeepInventory.dll", SearchOption.AllDirectories).FirstOrDefault() != default;
