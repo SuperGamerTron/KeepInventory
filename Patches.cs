@@ -9,29 +9,21 @@ namespace KeepInventory
 		public static void InitializeServerPackets()
         {
 			Server.PacketHandlers.Add(200, new Server.PacketHandler(Packets.ServerHandleCanKeepInventory));
-			Server.PacketHandlers.Add(201, new Server.PacketHandler(Packets.ServerHandleKeepInventory));
+			Server.PacketHandlers.Add(201, new Server.PacketHandler(Packets.ServerHandleDropItems));
         }
 
 		[HarmonyPostfix, HarmonyPatch(typeof(LocalClient), nameof(LocalClient.InitializeClientData))]
 		public static void InitializeClientData()
 		{
-			LocalClient.packetHandlers.Add(202, new LocalClient.PacketHandler(Packets.ClientHandleKeepInventory));
+			LocalClient.packetHandlers.Add(202, new LocalClient.PacketHandler(Packets.ClientHandleDropItems));
 		}
 
 		[HarmonyPostfix, HarmonyPatch(typeof(GameManager), nameof(GameManager.StartGame))]
 		public static void OnStartGame()
         {
-			if (!LocalClient.serverOwner)
-			{
-				Packets.ClientSendCanKeepInventory();
-			}
-        }
-
-		[HarmonyPostfix, HarmonyPatch(typeof(LocalClient), nameof(LocalClient.Disconnect))]
-		public static void OnDisconnect()
-		{
 			KeepInventory.playersWithMod.Clear();
-		}
+			Packets.ClientSendCanKeepInventory();
+        }
 
 		[HarmonyPrefix, HarmonyPatch(typeof(PlayerStatus), nameof(PlayerStatus.PlayerDied))]
 		public static bool OnPlayerDied(ref int damageType, ref int damageFromPlayer)
@@ -56,10 +48,7 @@ namespace KeepInventory
 				PlayerStatus.Instance.UpdateArmor(j, -1);
 			}
 			AchievementManager.Instance.AddDeath((PlayerStatus.DamageType)damageType);
-			if (GameManager.players.Count > 1)
-			{
-				Packets.ClientSendKeepInventory();
-			}
+			Packets.ClientSendDropItems();
 			return false;
         }
     }
